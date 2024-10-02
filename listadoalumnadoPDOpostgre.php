@@ -7,9 +7,9 @@
 </head>
 <body>
     <?php
-        $dsn = 'pgsql:host=localhost;port=5432;dbname=your_database';
-        $username = 'your_username';
-        $password = 'your_password';
+        $dsn = 'pgsql:host=localhost;port=5432;dbname=campus';
+        $username = 'postgres';
+        $password = 'postgres';
 
         try {
             $pdo = new PDO($dsn, $username, $password);
@@ -26,6 +26,26 @@
             <th>Email</th>
             <th>Aula</th>
         </tr>
+        <?php
+            $resultado_query = $pdo->query('
+            SELECT alumnado.dni, alumnado.nombre, alumnado.apellidos, alumnado.email, aulasvirtuales.nombrelargo
+            FROM alumnado
+            JOIN matriculas ON alumnado.dni = matriculas.dni 
+            JOIN aulasvirtuales ON matriculas.id_aula = aulasvirtuales.id
+            ');
+
+            while ($row = $resultado_query->fetch(PDO::FETCH_OBJ)) {
+                echo "<tr>
+                        <td>{$row->dni}</td>
+                        <td>{$row->nombre}</td>
+                        <td>{$row->apellidos}</td>
+                        <td>{$row->email}</td>
+                        <td>{$row->nombrelargo}</td>
+                      </tr>";
+            }
+
+            $pdo = null;
+        ?>
     </table>
 </body>
 </html>
